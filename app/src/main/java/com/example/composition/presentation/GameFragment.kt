@@ -19,7 +19,7 @@ class GameFragment : Fragment() {
     private val viewModel by lazy {
         ViewModelProvider(
             this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
+            GameViewModelFactory(level = level, application = requireActivity().application)
         )[GameViewModel::class.java]
     }
 
@@ -47,7 +47,6 @@ class GameFragment : Fragment() {
         setClickListenerOptions()
         observeProgress()
         observeTimer()
-        viewModel.startGame(level)
         observeResult()
     }
 
@@ -110,14 +109,14 @@ class GameFragment : Fragment() {
             val color = getColorByState(it)
             binding.tvAnswersProgress.setTextColor(color)
         }
-        viewModel.enoughPercentOfRightAnswer.observe(viewLifecycleOwner){
+        viewModel.enoughPercentOfRightAnswer.observe(viewLifecycleOwner) {
             val color = getColorByState(it)
             binding.progressBar.progressTintList = ColorStateList.valueOf(color)
         }
     }
 
-    private fun observeResult(){
-        viewModel.gameResult.observe(viewLifecycleOwner){
+    private fun observeResult() {
+        viewModel.gameResult.observe(viewLifecycleOwner) {
             launchGameFinishFragment(it)
         }
     }
